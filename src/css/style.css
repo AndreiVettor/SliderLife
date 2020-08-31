@@ -1,0 +1,9 @@
+.subject {
+    padding: 5px;
+    border: black 2px solid;
+    margin: 5px;
+}
+
+.subject .value {
+    margin-left: 5px;
+}
