@@ -1,9 +1,19 @@
+body {
+    margin: 0px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .subject {
-    padding: 5px;
-    border: black 2px solid;
+    padding: 10px;
+    border: black 1px solid;
     margin: 5px;
+    border-radius: 10px;
 }
 
 .subject .value {
     margin-left: 5px;
+}
+
+.col-4 {
+    width: 400px;
 }

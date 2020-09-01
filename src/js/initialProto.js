@@ -1,15 +1,15 @@
 const simulationStepTime = 1000;
-const subjectList = document.getElementById('subjectList');
+const subjectList = document.getElementsByClassName('subjectList')[0];
 var subjects = [
-    {"label": "Time", "value": 0, "focus": 0.1, "update": timeUpdate},
-    {"label": "Needs", "value": 0.2, "focus": 0.7, "update": needsUpdate},
-    {"label": "Health", "value": 0.2, "focus": 0.2, "update": healthUpdate}
+    {"label": "Time", "value": 0, "focus": 0.8, "update": timeUpdate},
+    {"label": "Needs", "value": 0.2, "focus": 0.1, "update": needsUpdate},
+    {"label": "Health", "value": 0.2, "focus": 0.1, "update": healthUpdate}
 ];
 
 // Init
 subjects.forEach(subject => {
     subject.htmlObject = {};
-    subject.htmlObject = document.createElement('li');
+    subject.htmlObject = document.createElement('div');
     subject.htmlObject.setAttribute('class', 'subject');
     subjectList.appendChild(subject.htmlObject);
 });
@@ -24,7 +24,7 @@ function simulationStep()
 {
     subjects.forEach(subject => {
         subject.update();
-        subject.htmlObject.innerText = subject.label + ': ' + subject.value;
+        subject.htmlObject.innerText = subject.label + ' ' + subject.value;
     });
 }
 
@@ -49,10 +49,9 @@ function needsUpdate() {
 }
 
 function healthUpdate() {
-    console.log(getSub("Health"));
     getSub("Health").value +=
         (0.01 * getSub("Health").focus)
-        + (0.01 * -(1 - getSub("Needs").value));
+        + (0.01 * -getSub("Needs").value);
         - 0.001
     getSub("Health").value = clamp(getSub("Health").value, 0, 1);
 }
