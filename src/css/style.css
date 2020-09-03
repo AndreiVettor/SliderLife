@@ -1,6 +1,6 @@
 body {
     margin: 0px 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 
 .subject {
@@ -12,8 +12,13 @@ body {
 
 .subject .value {
     margin-left: 5px;
+    float: right;
+}
+
+.subject input {
+    display: block;
 }
 
 .col-4 {
-    width: 400px;
+    width: 300px;
 }
