@@ -33,28 +33,32 @@ subjects.push({
     label: "Needs",
     value: 20,
     reference: 0,
-    focused: false
+    focused: false,
+    focus: 0
 });
 
 subjects.push({
     label: "Health",
     value: 40,
     reference: 0,
-    focused: false
+    focused: false,
+    focus: 0
 });
 
 subjects.push({
     label: "Career",
     value: 30,
     reference: 0,
-    focused: false
+    focused: false,
+    focus: 0
 });
 
 subjects.push({
     label: "Family",
     value: 20,
     reference: 0,
-    focused: false
+    focused: false,
+    focus: 0
 });
 
 
@@ -76,11 +80,17 @@ function randomBoxMuller() {
 
 
 function computeFeedback(subject) {
+    var error;
+    
     // Bypass reference if subject not focused on
     if(subject.focused == false) {
         subject.reference = subject.value;
+        error = subject.reference - subject.value;
+    } else {
+        error = subject.reference - subject.value;
+        error *= subject.focus;
     }
-    var error = subject.reference - subject.value;
+
     subject.value += 
         errorProportional * error
         + randomPerturbation();
@@ -89,6 +99,28 @@ function computeFeedback(subject) {
 function computeModel(subject, index) {
     for(var i = 0; i < subjects.length; ++i) {
         subject.value += weights[index][i] * subjects[i].value * weightProportional;
+    }
+}
+
+function computeFocus() {
+    let deltas = [];
+    let deltaSum = 0;
+
+    for(var i = 0; i < subjects.length; ++i) {
+        if(subjects[i].focused == true) {
+            deltas[i] = Math.abs(subjects[i].reference - subjects[i].value);
+            deltaSum += deltas[i];
+        } else {
+            deltas[i] = 0;
+        }
+    }
+
+    for(var i = 0; i < subjects.length; ++i) {
+        if(subjects[i].focused == true) {
+            subjects[i].focus = deltas[i] / deltaSum;
+        } else {
+            subjects[i].focus = 0;
+        }
     }
 }
 
@@ -110,6 +142,7 @@ function simulationStep()
         subjects[i].reference = parseFloat(htmlObjects[i].getElementsByTagName('input')[0].value);
         subjects[i].focused = htmlObjects[i].classList.contains('focused');
         htmlObjects[i].getElementsByClassName('value')[0].innerText = subjects[i].value.toFixed(2);
+        htmlObjects[i].getElementsByClassName('focusValue')[0].innerText = subjects[i].focus.toFixed(2);
         sum += subjects[i].value;
     }
 
@@ -121,6 +154,7 @@ function simulationStep()
     }
 
     // Update subjects
+    computeFocus();
     for (let i = 0; i < subjects.length; i++) {
         computeFeedback(subjects[i]);
         computeModel(subjects[i], i);
@@ -165,8 +199,18 @@ for(var i = 0; i < subjects.length; ++i)
     slider.setAttribute('max','100');
     slider.setAttribute('step','1');
     slider.value = subjects[i].focus;
-
     htmlObjects[i].appendChild(slider);
+
+    let focusLabelSpan = document.createElement('span');
+    focusLabelSpan.setAttribute('class','focusLabel')
+    focusLabelSpan.innerText = 'Focus: ';
+    htmlObjects[i].appendChild(focusLabelSpan);
+
+    let focusValueSpan = document.createElement('span');
+    focusValueSpan.setAttribute('class','focusValue')
+    focusValueSpan.innerText = subjects[i].focus;
+    htmlObjects[i].appendChild(focusValueSpan);
+
     subjectList.appendChild(htmlObjects[i]);
 }
 
